@@ -1,0 +1,29 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: openwebui
+    ports:
+      - "3000:8080"
+    environment:
+      OLLAMA_BASE_URL: "http://ollama:11434"
+    volumes:
+      - openwebui:/app/backend/data
+    depends_on:
+      - ollama
+
+volumes:
+  ollama:
+  openwebui:
