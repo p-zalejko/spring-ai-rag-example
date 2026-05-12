@@ -8,13 +8,6 @@ spring:
       embedding:
         options:
           model: nomic-embed-text
-    vectorstore:
-      mongodb:
-        initialize-schema: true
-        collection-name: custom_vector_store
-        index-name: custom_vector_index
-        path-name: embedding
-        metadata-fields-to-filter: author,year,tenantId,metadata.tenantId
   mongodb:
     uri: mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.zcamfyk.mongodb.net/?appName=Cluster0
     database: my-rag

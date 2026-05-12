@@ -78,7 +78,7 @@ public class FinancialTools {
         log.debug("Tool: get_transactions_for_account tenant={} account={} from={} to={}", tenantId, accountId, from, to);
 
         LocalDate fromDate = LocalDate.parse(from, DateTimeFormatter.ISO_DATE);
-        LocalDate toDate   = LocalDate.parse(to,   DateTimeFormatter.ISO_DATE);
+        LocalDate toDate = LocalDate.parse(to, DateTimeFormatter.ISO_DATE);
 
         List<Transaction> txns = transactionRepository
                 .findByTenantIdAndAccountIdAndDateBetweenOrderByDateDesc(
@@ -101,7 +101,7 @@ public class FinancialTools {
         log.debug("Tool: get_spending_by_category tenant={} year={} month={}", tenantId, year, month);
 
         LocalDate from = LocalDate.of(year, month, 1);
-        LocalDate to   = from.withDayOfMonth(from.lengthOfMonth());
+        LocalDate to = from.withDayOfMonth(from.lengthOfMonth());
 
         List<TransactionRepository.CategoryTotal> totals =
                 transactionRepository.spendingByCategory(tenantId, from, to);
