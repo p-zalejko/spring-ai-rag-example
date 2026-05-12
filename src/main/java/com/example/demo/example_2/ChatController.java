@@ -19,7 +19,7 @@ curl -X POST http://localhost:8080/api/chat \
   -H "X-Tenant-Id: tenant-acme" \
   -d '{"message": "Find my Berlin business trip payment"}'
 
-# Ask for spending analysis (hits tool calling)
+# Ask for spending analysis (hits tool calling)  --> might not give the answer, can ask an additional question(s)
 curl -X POST http://localhost:8080/api/chat \
   -H "Content-Type: application/json" \
   -H "X-Tenant-Id: tenant-acme" \

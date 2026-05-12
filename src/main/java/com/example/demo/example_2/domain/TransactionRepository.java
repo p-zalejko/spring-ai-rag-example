@@ -1,5 +1,6 @@
 package com.example.demo.example_2.domain;
 
+import lombok.Data;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -33,15 +34,15 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
     List<CounterpartyTotal> topCounterparties(String tenantId);
 
     // ── Projections ──────────────────────────────────────────────────────────
-    interface CategoryTotal {
-        String getId();        // category name
-
-        BigDecimal getTotal();
+    @Data
+    class CategoryTotal {
+        String id;
+        BigDecimal total;
     }
 
-    interface CounterpartyTotal {
-        String getId();        // counterparty name
-
-        BigDecimal getTotal();
+    @Data
+    class CounterpartyTotal {
+        String id;
+        BigDecimal total;
     }
 }

@@ -7,14 +7,10 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,7 +18,6 @@ import java.util.stream.Collectors;
 public class ChatService {
 
     private final ChatClient.Builder chatClientBuilder;
-    private final VectorStore vectorStore;
     private final FinancialTools financialTools;
 
     // In a real app: store per-user session in Redis or MongoDB
@@ -45,16 +40,6 @@ public class ChatService {
         String tenantId = TenantContext.current();
         log.debug("Chat request: tenant={}, message={}", tenantId, userMessage);
 
-        // ── Step 1: Vector search for semantically relevant context ──────────
-        String vectorContext = retrieveRelevantContext(userMessage, tenantId);
-
-        // ── Step 2: Build enriched user message ──────────────────────────────
-        String enrichedMessage = userMessage;
-        if (!vectorContext.isBlank()) {
-            enrichedMessage = userMessage + "\n\n[Related transaction context from your history:\n"
-                    + vectorContext + "]";
-        }
-
         // ── Step 3: Call Claude with tools registered ─────────────────────
         // Spring AI handles the tool-call loop:
         //   1. AI receives tools + message
@@ -65,7 +50,7 @@ public class ChatService {
                 .prompt()
                 .system(SYSTEM_PROMPT)
                 .messages(conversationHistory)
-                .user(enrichedMessage)
+                .user(userMessage)
                 .tools(financialTools)       // register all @Tool methods
                 .call()
                 .content();
@@ -80,30 +65,6 @@ public class ChatService {
         }
 
         return response;
-    }
-
-    private String retrieveRelevantContext(String query, String tenantId) {
-        try {
-            // Filter vector search to current tenant only — CRITICAL for multitenancy
-            SearchRequest request = SearchRequest.builder()
-                    .query(query)
-                    .topK(4)
-//                    .filterExpression("metadata.tenantId == '" + tenantId + "'")
-                    .filterExpression("tenantId == '" + tenantId + "'")
-                    .build();
-
-            List<Document> docs = vectorStore.similaritySearch(request);
-
-            if (docs.isEmpty()) return "";
-
-            return docs.stream()
-                    .map(Document::getText)
-                    .collect(Collectors.joining("\n---\n"));
-
-        } catch (Exception e) {
-            log.warn("Vector search failed, continuing without context: {}", e.getMessage());
-            return "";
-        }
     }
 
     public void clearHistory() {

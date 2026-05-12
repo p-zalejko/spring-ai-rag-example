@@ -1,6 +1,5 @@
 package com.example.demo.example_2;
 
-import com.example.demo.example_2.ai.DataIngestionService;
 import com.example.demo.example_2.domain.Account;
 import com.example.demo.example_2.domain.AccountRepository;
 import com.example.demo.example_2.domain.Transaction;
@@ -29,7 +28,6 @@ class DatabaseInitializer {
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
-    private final DataIngestionService dataIngestionService;
 
     // ── Tenant definitions ────────────────────────────────────────────────
     private static final String TENANT_ACME = "tenant-acme";
@@ -60,7 +58,6 @@ class DatabaseInitializer {
         log.info("  Saved {} accounts, {} transactions for [{}]",
                 accounts.size(), transactions.size(), tenantId);
 
-        dataIngestionService.ingestTransactionsForTenant(tenantId);
         log.info("  Vector ingestion complete for [{}]", tenantId);
     }
 
