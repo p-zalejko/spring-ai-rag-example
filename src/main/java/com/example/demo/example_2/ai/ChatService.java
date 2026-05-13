@@ -19,7 +19,6 @@ public class ChatService {
 
     private final ChatClient.Builder chatClientBuilder;
     private final FinancialTools financialTools;
-
     // In a real app: store per-user session in Redis or MongoDB
     private final List<Message> conversationHistory = new ArrayList<>();
 

@@ -1,6 +1,13 @@
 spring.application.name: my-rag-example
+
 spring:
   ai:
+    mcp:
+      server:
+        protocol: streamable
+        stdio: false
+        type: sync
+
     # https://docs.spring.io/spring-ai/reference/api/chat/ollama-chat.html
     ollama:
       base-url: http://localhost:11434
